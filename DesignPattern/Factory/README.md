@@ -64,6 +64,7 @@ private:
 ```
 
 > 此处家具A类工厂通过构造函数和static的变量，来保证系统启动的时候即可通过父类的构造函数自动注册到FurnitureCreateFactory的单例对象中  
+> static对象在系统启动的时候会自动生成，自动生成的时候调用构造函数从而自动注册  
 > 同理TransportCreateFactory也通过这种方式来自动注册家具工厂对象  
 
 ## main方法
