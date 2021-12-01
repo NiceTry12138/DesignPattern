@@ -150,6 +150,12 @@ void Interaction() {
     } while (!isQuit);
 }
 
+class TestC {
+    char c;
+    double d;
+    int i;
+};
+
 int main(int argv, char *args[])
 {
     Interaction();  // 交互方式
