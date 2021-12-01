@@ -3,7 +3,7 @@
  * @Autor: LC
  * @Date: 2021-11-30 15:04:26
  * @LastEditors: LC
- * @LastEditTime: 2021-11-30 15:20:33
+ * @LastEditTime: 2021-12-01 11:50:30
  * @Description: 工厂模式
 -->
 # 工厂模式
@@ -19,6 +19,30 @@ Transport为传输基类，有空运、水运、陆运三个子类，传输类�
 家具分为A、B、C三种风格，又分为桌子、椅子、沙发三种家具，所以使用抽线工厂，可以生成同种类型的不同家具  
 有为了保证运输类的开闭原则，所以所以的家具都有一个父类`BaseFurniture`  
 A、B、C三种工厂交给`FurnitureCreateFactory`简单工厂使用，简单工厂维护一个`std::map<std::string, FurnitureFactory*>`映射表，来方便的创建家具对象
+
+```cpp
+// 家具工厂基类
+class FurnitureFactory {
+public:
+	FurnitureFactory(const std::string& name) : m_name(name) {
+		FurnitureCreateFactory::GetInstance().AddFurnitureFactory(name, this);
+	}
+private:
+	std::string m_name;
+};
+
+// 家具A类工厂
+class Factory_A : public FurnitureFactory {
+public:
+	Factory_A() : FurnitureFactory("A") {}
+
+private:
+	static Factory_A _self;
+};
+```
+
+> 此处家具A类工厂通过构造函数和static的变量，来保证系统启动的时候即可通过父类的构造函数自动注册到FurnitureCreateFactory的单例对象中  
+> 同理FurnitureCreateFactory也通过这种方式来自动注册家具工厂对象  
 
 ## main方法
 
@@ -43,6 +67,8 @@ int main(int argv, char *args[])
 
 `Test()` 为直接测试模式，运行直接出指定结果  
 
-`InitTransportCreateFactory()` 初始化所有运输工厂
+`InitTransportCreateFactory()` 初始化所有运输工厂，**在本版本中被删除**，因为所有工厂都是自动注册无需手动注册
 
-`InitFurnitureCreateFactory()` 初始化所有家具工厂
+`InitFurnitureCreateFactory()` 初始化所有家具工厂，**在本版本中被删除**，因为所有工厂都是自动注册无需手动注册  
+
+因为所有的工厂和创建工厂的工厂都是static对象，所以无需使用`delete`/`new`来管理对象内存，也不用担心这几个类的内存泄露，但是实体类的对象是`new`创建出来的，所以实体类依旧需要进行内存管理  

@@ -1,5 +1,11 @@
 #include "TransportFactory.h"
 
+TransportLandFactory TransportLandFactory::_self;
+
+TransportLiquidFactory TransportLiquidFactory::_self;
+
+TransportAirFactory TransportAirFactory::_self;
+
 BaseTransport* TransportLandFactory::CreateTransport()
 {
 	return new TransportLand();
@@ -13,6 +19,13 @@ BaseTransport* TransportLiquidFactory::CreateTransport()
 BaseTransport* TransportAirFactory::CreateTransport()
 {
 	return new TransportAir();
+}
+
+TransportCreateFactory& TransportCreateFactory::GetInstance()
+{
+	static TransportCreateFactory instance;
+	return instance;
+	// TODO: 在此处插入 return 语句
 }
 
 void TransportCreateFactory::AddTransportFactory(std::string key, TransportFactory* factory)
@@ -31,10 +44,4 @@ BaseTransport* TransportCreateFactory::CreateTransport(const std::string key)
 
 TransportCreateFactory::~TransportCreateFactory()
 {
-	for (auto _it = m_factories.begin(); _it != m_factories.end(); ++_it)
-	{
-		delete _it->second;
-		_it->second = nullptr;
-		m_factories.erase(_it);
-	}
 }

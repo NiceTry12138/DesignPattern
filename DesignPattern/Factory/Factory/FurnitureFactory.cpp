@@ -1,5 +1,11 @@
 #include "FurnitureFactory.h"
 
+Factory_A Factory_A::_self;
+
+Factory_B Factory_B::_self;
+
+Factory_C Factory_C::_self;
+
 Table* Factory_A::CreateTable(const std::string& name)
 {
 	return new Table_A(name);
@@ -45,6 +51,12 @@ Sofa* Factory_C::CreateSofa(const std::string& name)
 	return new Sofa_C(name);
 }
 
+FurnitureCreateFactory& FurnitureCreateFactory::GetInstance()
+{
+	static FurnitureCreateFactory _factory;
+	return _factory;
+}
+
 void FurnitureCreateFactory::AddFurnitureFactory(std::string key, FurnitureFactory* factory)
 {
 	m_furnitures.insert(std::pair<std::string, FurnitureFactory*>(key, factory));
@@ -75,4 +87,8 @@ Sofa* FurnitureCreateFactory::CreateSofa(const std::string key, const std::strin
 	}
 	std::cout << key + " Sofa con't create" << std::endl;
 	return nullptr;
+}
+
+FurnitureCreateFactory::~FurnitureCreateFactory()
+{
 }

@@ -12,37 +12,16 @@
 #include "TransportFactory.h"
 using namespace std;
 
-// 初始化所有运输工厂
-TransportCreateFactory* InitTransportCreateFactory() {
-    auto transportFactory = new TransportCreateFactory();
-    transportFactory->AddTransportFactory("Land", new TransportLandFactory());
-    transportFactory->AddTransportFactory("Liquid", new TransportLiquidFactory());
-    transportFactory->AddTransportFactory("Air", new TransportAirFactory());
-    return transportFactory;
-}
-
-// 初始化所有家具工厂
-FurnitureCreateFactory* InitFurnitureCreateFactory() {
-    auto furnitureFactory = new FurnitureCreateFactory();
-    furnitureFactory->AddFurnitureFactory("A", new Factory_A());
-    furnitureFactory->AddFurnitureFactory("B", new Factory_B());
-    furnitureFactory->AddFurnitureFactory("C", new Factory_C());
-    return furnitureFactory;
-}
 // 直接运行方式
 void Test() {
-    auto transportFactory = InitTransportCreateFactory();
-
-    auto furnitureFactory = InitFurnitureCreateFactory();
-
-    auto landTransport = transportFactory->CreateTransport("Land");
-    landTransport->AddFurniture(furnitureFactory->CreateChair("A", "1"));
-    landTransport->AddFurniture(furnitureFactory->CreateSofa("A", "2"));
-    landTransport->AddFurniture(furnitureFactory->CreateTable("B", "3"));
-    landTransport->AddFurniture(furnitureFactory->CreateChair("B", "4"));
-    landTransport->AddFurniture(furnitureFactory->CreateSofa("A", "5"));
-    landTransport->AddFurniture(furnitureFactory->CreateTable("C", "6"));
-    landTransport->AddFurniture(furnitureFactory->CreateSofa("C", "7"));
+    auto landTransport = TransportCreateFactory::GetInstance().CreateTransport("Land");
+    landTransport->AddFurniture(FurnitureCreateFactory::GetInstance().CreateChair("A", "1"));
+    landTransport->AddFurniture(FurnitureCreateFactory::GetInstance().CreateSofa("A", "2"));
+    landTransport->AddFurniture(FurnitureCreateFactory::GetInstance().CreateTable("B", "3"));
+    landTransport->AddFurniture(FurnitureCreateFactory::GetInstance().CreateChair("B", "4"));
+    landTransport->AddFurniture(FurnitureCreateFactory::GetInstance().CreateSofa("A", "5"));
+    landTransport->AddFurniture(FurnitureCreateFactory::GetInstance().CreateTable("C", "6"));
+    landTransport->AddFurniture(FurnitureCreateFactory::GetInstance().CreateSofa("C", "7"));
 
     landTransport->ShowTransportInfo();
     landTransport->ShowFurnitreInfo();
@@ -53,7 +32,7 @@ void Test() {
 }
 
 // 选择家具种类 椅子 桌子 沙发
-BaseFurniture* SelectFurniture(FurnitureCreateFactory* funitureFactory, const std::string &type)
+BaseFurniture* SelectFurniture(const std::string &type)
 {
     std::cout << std::string("Input Number Select Furniture : 1.Chair  2.Table  3.Sofa") << std::endl;
     int furnitureType = 1;
@@ -65,13 +44,13 @@ BaseFurniture* SelectFurniture(FurnitureCreateFactory* funitureFactory, const st
         switch (furnitureType)
         {
         case 1:
-            return funitureFactory->CreateChair(type, name);
+            return FurnitureCreateFactory::GetInstance().CreateChair(type, name);
             break;
         case 2:
-            return funitureFactory->CreateTable(type, name);
+            return FurnitureCreateFactory::GetInstance().CreateTable(type, name);
             break;
         case 3:
-            return funitureFactory->CreateSofa(type, name);
+            return FurnitureCreateFactory::GetInstance().CreateSofa(type, name);
             break;
         default:
             std::cout << "Input Right Number" << std::endl;
@@ -82,7 +61,7 @@ BaseFurniture* SelectFurniture(FurnitureCreateFactory* funitureFactory, const st
 }
 
 // 选择家具风格 A、B、C
-BaseFurniture* SelectTheme(FurnitureCreateFactory* furnitureFactory) {
+BaseFurniture* SelectTheme() {
     std::cout << std::string("Input Number Select Furniture Theme : 1.A  2.B  3.C") << std::endl;
     int furnitureType = 1;
     while (true) {
@@ -90,13 +69,13 @@ BaseFurniture* SelectTheme(FurnitureCreateFactory* furnitureFactory) {
         switch (furnitureType)
         {
         case 1:
-            return SelectFurniture(furnitureFactory, "A");
+            return SelectFurniture( "A");
             break;
         case 2:
-            return SelectFurniture(furnitureFactory, "B");
+            return SelectFurniture( "B");
             break;
         case 3:
-            return SelectFurniture(furnitureFactory, "C");
+            return SelectFurniture( "C");
             break;
         default:
             std::cout << "Input Right Number" << std::endl;
@@ -113,7 +92,7 @@ bool IsQuitTransport() {
 }
 
 // 选择传输方式 陆路 水路 空运
-void SelectTranportOnce(TransportCreateFactory* transportFactory, FurnitureCreateFactory* furnitureFactory) {
+void SelectTranportOnce() {
 
     int transportType = 0;
     std::cout << std::string("Input Number Select Transport : 1.Land  2.Liquid  3.Air") << std::endl;
@@ -125,13 +104,13 @@ void SelectTranportOnce(TransportCreateFactory* transportFactory, FurnitureCreat
         switch (transportType)
         {
         case 1:
-            tranportObj = transportFactory->CreateTransport("Land");
+            tranportObj = TransportCreateFactory::GetInstance().CreateTransport("Land");
             break;
         case 2:
-            tranportObj = transportFactory->CreateTransport("Liquid");
+            tranportObj = TransportCreateFactory::GetInstance().CreateTransport("Liquid");
             break;
         case 3:
-            tranportObj = transportFactory->CreateTransport("Air");
+            tranportObj = TransportCreateFactory::GetInstance().CreateTransport("Air");
             break;
         default:
             std::cout << "Please Input Right Number " << std::endl;
@@ -142,7 +121,7 @@ void SelectTranportOnce(TransportCreateFactory* transportFactory, FurnitureCreat
     bool isQuit = false;
     do
     {
-        tranportObj->AddFurniture(SelectTheme(furnitureFactory));
+        tranportObj->AddFurniture(SelectTheme());
         system("cls");
         tranportObj->ShowTransportInfo();
         tranportObj->ShowFurnitreInfo();
@@ -164,13 +143,9 @@ bool IsQuitInteraction() {
 }
 // 交互方式
 void Interaction() {
-    auto transportFactory = InitTransportCreateFactory();
-
-    auto furnitureFactory = InitFurnitureCreateFactory();
-
     bool isQuit = false;
     do {
-        SelectTranportOnce(transportFactory, furnitureFactory);
+        SelectTranportOnce();
         isQuit = IsQuitInteraction();
     } while (!isQuit);
 }
