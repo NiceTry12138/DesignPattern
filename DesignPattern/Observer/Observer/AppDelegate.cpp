@@ -1,85 +1,91 @@
 #include "AppDelegate.h"
 
-#include "StudenConfigList.h"
-#include "TeacherConfigList.h"
-
 #include <cstdlib>
+#include <time.h>
 
 void AppDelegate::Run()
 {
-	Test(10, 4);
+	Test(5, 2);
 }
 
 void AppDelegate::ShowCurrentInfo()
 {
-	StudentConfigList::GetInstance().ShowStudensInfo();
-
-	TeachConfigList::GetInstance().ShowTeachersInfo();
-
+	for (auto stu : m_students)
+	{
+		stu->ShowInfo();
+	}
+	std::cout << std::endl;
+	for (auto tea : m_teachers)
+	{
+		tea->ShowInfo();
+	}
 	std::cout << std::endl;
 }
 
-void AppDelegate::ModifyInfo(const std::string& info, int TeaNum)
+void AppDelegate::ModifyInfo(const std::string& info)
 {
-	for (int i=0; i<TeaNum; ++i)
+	for (auto tea : m_teachers)
 	{
-		TeachConfigList::GetInstance().GetTeacherByName("Teacher_" + std::to_string(i))->Modify(info);
+		tea->Modify(info);
 	}
 }
 
-void AppDelegate::CreateStudent()
+void AppDelegate::CreateStudent(int num)
 {
-	std::cout << "Please Input Student Name : " << std::endl;
-	std::string name{};
-	cin >> name;
-	Student::Create(name);
-	std::cout << "Create Student Finish" << std::endl;
+	for (int i = 0; i < num; ++i)
+	{
+		std::shared_ptr<Student> student(new Student("Student_" + std::to_string(i)));
+		m_students.push_back(student);
+	}
 }
 
-void AppDelegate::CreateTeacher()
+void AppDelegate::CreateTeacher(int num)
 {
-	std::cout << "Please Input Teacher Name : " << std::endl;
-	std::string name{};
-	cin >> name;
-	Teacher::Create(name);
-	std::cout << "Create Student Finish" << std::endl;
+	for (int i = 0; i < num; ++i)
+	{
+		std::shared_ptr<Teacher> teacher(new Teacher("Teacher_" + std::to_string(i)));
+		m_teachers.push_back(teacher);
+	}
 }
 
 void AppDelegate::Test(int StuNum, int TeaNum)
 {
-	for (int i = 0; i < TeaNum; ++i) {
-		Teacher::Create("Teacher_" + std::to_string(i));
-	}
+	CreateStudent(StuNum);
+	CreateTeacher(TeaNum);
 
-	std::cout << std::endl;
-
-	for (int i = 0; i < StuNum; ++i) {
-		auto stu = Student::Create("Student_" + std::to_string(i));
-		for (int teaID = 0; teaID < TeaNum; ++teaID)
+	// 老师添加观察者
+	for (auto stu : m_students)
+	{
+		for (auto tea : m_teachers)
 		{
-			TeachConfigList::GetInstance().GetTeacherByName("Teacher_" + std::to_string(teaID))->AddObserver(stu);
+			tea->AddObserver(stu.get());
 		}
 	}
 
-	for (int i = 0; i < StuNum; ++i) {
-		std::string unSubTeachName = "Teacher_" + std::to_string(RandomInt(TeaNum));
-		auto stu = StudentConfigList::GetInstance().GetStudentByName("Student_" + std::to_string(i));
-		//stu->RemoveRegisterPublisher(unSubTeachName);
-		TeachConfigList::GetInstance().GetTeacherByName(unSubTeachName)->RemoveObserver(stu);
+	// 学生取消订阅
+	for (auto stu : m_students)
+	{
+		int randomTeaIndex = RandomInt(m_teachers.size());
+		stu->UnSubscribePublisher(m_teachers[randomTeaIndex].get());
 	}
 
-	std::cout << std::endl;
-
-	for (int i = 0; i < TeaNum; ++i) {
-		auto stu = StudentConfigList::GetInstance().GetStudentByName("Student_" + std::to_string(RandomInt(StuNum)));
-		TeachConfigList::GetInstance().GetTeacherByName("Teacher_" + std::to_string(i))->RemoveObserver(stu);
+	// 老师删除观察者
+	for (auto tea : m_teachers)
+	{
+		int randomStuIndex = RandomInt(m_students.size());
+		tea->RemoveObserver(m_students[randomStuIndex].get());
 	}
 
-	std::cout << std::endl;
+	// 学生订阅老师
+	for (auto stu : m_students)
+	{
+		int randomTeaIndex = RandomInt(m_teachers.size());
+		stu->SubscribePublisher(m_teachers[randomTeaIndex].get());
+	}
 
 	ShowCurrentInfo();
 
-	ModifyInfo("homework status update, please Notice That", TeaNum);
+	ModifyInfo("Math Homework status update, please Notice That");
 }
 
 AppDelegate::AppDelegate()

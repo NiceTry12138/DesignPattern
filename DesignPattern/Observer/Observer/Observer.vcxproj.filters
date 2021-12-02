@@ -27,13 +27,10 @@
     <ClInclude Include="Teacher.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="StudenConfigList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="TeacherConfigList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="AppDelegate.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IObservers.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,12 +44,6 @@
     <ClCompile Include="Teacher.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="StudenConfigList.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="TeacherConfigList.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -60,6 +51,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="AppDelegate.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IObservers.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

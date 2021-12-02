@@ -26,7 +26,7 @@ class IPublichser
     IPublichser(const std::string &name);
 
     std::string GetName() const;
-protected:
+
     void ShowInfo();
 
 private:

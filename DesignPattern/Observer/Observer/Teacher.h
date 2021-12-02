@@ -10,6 +10,7 @@
 #define SEASTAR_TEACHER
 
 #include "IPublisher.h"
+#include "IObservers.h"
 #include <string>
 #include <memory>
 
@@ -17,10 +18,12 @@ using namespace std;
 
 class Teacher : public IPublichser {
 public:
-	static Teacher* Create(std::string _name);
+	//static Teacher* Create(std::string _name);
+	void AddObserver(IObservers* obs);
+	void RemoveObserver(IObservers* obs);
 
 public:
-	void ShowInfo();
+	virtual void Modify(const std::string& info) override;
 	Teacher(std::string _name);
 	~Teacher();
 };

@@ -16,13 +16,11 @@ void IPublichser::AddObserver(IObserver* obs)
 			return;
 		}
 	}
-	obs->AddRegisterPublisher(m_name);
 	m_oberserList.push_back(obs);
 }
 
 void IPublichser::RemoveObserver(IObserver* obs)
 {
-	obs->RemoveRegisterPublisher(m_name);
 	m_oberserList.remove(obs);
 }
 
@@ -30,7 +28,10 @@ void IPublichser::Modify(const std::string& info)
 {
 	for (auto obs : m_oberserList) {
 		std::cout << "	" << m_name << " Notice ";
- 		obs->update(info);
+		if (obs->IsGetInfo())
+		{
+ 			obs->update(info);
+		}
 	}
 	std::cout << std::endl;
 }
@@ -46,6 +47,7 @@ std::string IPublichser::GetName() const
 
 void IPublichser::ShowInfo()
 {
+	std::cout << "Publisher " << GetName() << std::endl;
 	for (auto iObserve : m_oberserList)
 	{
 		std::cout << "	Register Observer " << iObserve->GetName() << std::endl;

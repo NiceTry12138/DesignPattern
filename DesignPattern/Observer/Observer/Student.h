@@ -9,25 +9,29 @@
 #ifndef SEASTAR_STUDENT
 #define SEASTAR_STUDENT
 
-#include "IObserver.h"
-#include <vector>
+#include "IPublisher.h"
+#include "IObservers.h"
+#include <list>
 #include <string>
 
 using namespace std;
 
-class Student : public IObserver {
+class Student : public IObservers {
 public:
-	static Student* Create(const std::string &name);
+	//static Student* Create(const std::string &name);
 
 public:
 	void update(const std::string& info) override;
 
 	void ShowInfo();
 
+	bool IsGetInfo() override;
+
 	Student(std::string _name);
 	~Student();
 
 private:
+
 };
 
 #endif

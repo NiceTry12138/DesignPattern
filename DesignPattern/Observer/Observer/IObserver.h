@@ -22,14 +22,10 @@ public:
 
     std::string GetName() const;
 
-    void AddRegisterPublisher(const std::string& publishName);
-    void RemoveRegisterPublisher(const std::string& publishName);
-
-    void ShowInfo();
+    virtual bool IsGetInfo() = 0;
 
 private:
     std::string m_name;
-    std::list<std::string> m_registPublisher;
 };
 
 #endif

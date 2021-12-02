@@ -1,29 +1,24 @@
 #include "Student.h"
-#include "StudenConfigList.h"
-
-Student* Student::Create(const std::string& name)
-{
-	auto student = make_shared<Student>(name);
-	StudentConfigList::GetInstance().AddStudent(name, student);
-	return student.get();
-}
 
 void Student::update(const std::string& info)
 {
-	std::cout << "	" << GetName() << " get info : " << info << std::endl;
+	std::cout << "Studen " << GetName() << " Get Info : " << info << std::endl;
 }
 
 void Student::ShowInfo()
 {
-	std::cout << "Student Name " << GetName() << std::endl;
-	IObserver::ShowInfo();
+	IObservers::ShowInfo();
 }
 
-Student::Student(std::string _name) : IObserver(_name)
+bool Student::IsGetInfo()
+{
+	return true;
+}
+
+Student::Student(std::string _name) : IObservers(_name)
 {
 }
 
 Student::~Student()
 {
-	std::cout << "___ Student " << GetName() << " ~ delete" << std::endl;
 }

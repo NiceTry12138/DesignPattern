@@ -141,21 +141,19 @@
   <ItemGroup>
     <ClInclude Include="AppDelegate.h" />
     <ClInclude Include="IObserver.h" />
+    <ClInclude Include="IObservers.h" />
     <ClInclude Include="IPublisher.h" />
-    <ClInclude Include="StudenConfigList.h" />
     <ClInclude Include="Student.h" />
     <ClInclude Include="Teacher.h" />
-    <ClInclude Include="TeacherConfigList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppDelegate.cpp" />
     <ClCompile Include="IObserver.cpp" />
+    <ClCompile Include="IObservers.cpp" />
     <ClCompile Include="IPublisher.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="StudenConfigList.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="Teacher.cpp" />
-    <ClCompile Include="TeacherConfigList.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

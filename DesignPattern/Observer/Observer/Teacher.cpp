@@ -1,24 +1,27 @@
 #include "Teacher.h"
-#include "TeacherConfigList.h"
 
-Teacher* Teacher::Create(std::string _name)
+void Teacher::AddObserver(IObservers* obs)
 {
-	auto teacher = make_shared<Teacher>(_name);
-	TeachConfigList::GetInstance().AddTeacher(_name, teacher);
-	return teacher.get();
+	obs->SubscribePublisher(this);
+	IPublichser::AddObserver(obs);
 }
 
-void Teacher::ShowInfo()
+void Teacher::RemoveObserver(IObservers* obs)
 {
-	std::cout << "Teacher Name " << GetName() << std::endl;
-	IPublichser::ShowInfo();
+	obs->UnSubscribePublisher(this);
+	IPublichser::RemoveObserver(obs);
 }
 
-Teacher::Teacher(std::string _name) : IPublichser(_name)
+void Teacher::Modify(const std::string& info)
+{
+	std::cout << "Teacher " << GetName() << " Send HomeWork" << std::endl;
+	IPublichser::Modify(info);
+}
+
+Teacher::Teacher(std::string _name) :IPublichser(_name)
 {
 }
 
 Teacher::~Teacher()
 {
-	std::cout << "___ teacher " << GetName() << " ~ delete" << std::endl;
 }
