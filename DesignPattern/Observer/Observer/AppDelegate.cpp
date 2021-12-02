@@ -15,6 +15,8 @@ void AppDelegate::ShowCurrentInfo()
 	StudentConfigList::GetInstance().ShowStudensInfo();
 
 	TeachConfigList::GetInstance().ShowTeachersInfo();
+
+	std::cout << std::endl;
 }
 
 void AppDelegate::ModifyInfo(const std::string& info, int TeaNum)
@@ -48,6 +50,9 @@ void AppDelegate::Test(int StuNum, int TeaNum)
 	for (int i = 0; i < TeaNum; ++i) {
 		Teacher::Create("Teacher_" + std::to_string(i));
 	}
+
+	std::cout << std::endl;
+
 	for (int i = 0; i < StuNum; ++i) {
 		auto stu = Student::Create("Student_" + std::to_string(i));
 		for (int teaID = 0; teaID < TeaNum; ++teaID)
@@ -58,13 +63,19 @@ void AppDelegate::Test(int StuNum, int TeaNum)
 
 	for (int i = 0; i < StuNum; ++i) {
 		std::string unSubTeachName = "Teacher_" + std::to_string(RandomInt(TeaNum));
-		StudentConfigList::GetInstance().GetStudentByName("Student_" + std::to_string(i))->RemoveRegisterPublisher(unSubTeachName);
+		auto stu = StudentConfigList::GetInstance().GetStudentByName("Student_" + std::to_string(i));
+		//stu->RemoveRegisterPublisher(unSubTeachName);
+		TeachConfigList::GetInstance().GetTeacherByName(unSubTeachName)->RemoveObserver(stu);
 	}
+
+	std::cout << std::endl;
 
 	for (int i = 0; i < TeaNum; ++i) {
 		auto stu = StudentConfigList::GetInstance().GetStudentByName("Student_" + std::to_string(RandomInt(StuNum)));
 		TeachConfigList::GetInstance().GetTeacherByName("Teacher_" + std::to_string(i))->RemoveObserver(stu);
 	}
+
+	std::cout << std::endl;
 
 	ShowCurrentInfo();
 
