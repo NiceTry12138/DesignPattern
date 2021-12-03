@@ -7,6 +7,8 @@ class Adapter : public AmericanSocket, public ChineseSocket
 {
 public:
 	Adapter(ChineseSocket* ChineseSocket, AmericanSocket* AmericanSocket);
+	Adapter(ChineseSocket* ChineseSocket);
+	Adapter(AmericanSocket* AmericanSocket);
 	
 	std::string AmericanSocketInput() const;
 	std::string ChineseSocketInput() const;

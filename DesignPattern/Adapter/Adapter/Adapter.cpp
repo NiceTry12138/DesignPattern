@@ -5,6 +5,14 @@ Adapter::Adapter(ChineseSocket* ChineseSocket, AmericanSocket* AmericanSocket) :
 
 }
 
+Adapter::Adapter(ChineseSocket* ChineseSocket) : m_ChineseSocket(ChineseSocket), m_AmericanSocket(nullptr)
+{
+}
+
+Adapter::Adapter(AmericanSocket* AmericanSocket) : m_ChineseSocket(nullptr), m_AmericanSocket(AmericanSocket)
+{
+}
+
 std::string Adapter::AmericanSocketInput() const
 {
 	if (m_ChineseSocket == nullptr)
@@ -25,13 +33,15 @@ std::string Adapter::ChineseSocketInput() const
 
 void Adapter::SetCurrentVoltag(int voltag)
 {
-	if (m_AmericanSocket != nullptr && m_AmericanSocket->GetRatedVoltag() != voltag)
+	if (m_AmericanSocket != nullptr)
 	{
+		voltag = m_AmericanSocket->GetRatedVoltag();	// 电压转换成美标的额定电压
 		m_AmericanSocket->SetCurrentVoltag(voltag);
 	}
 
-	if (m_ChineseSocket != nullptr && m_ChineseSocket->GetRatedVoltag() != voltag)
+	if (m_ChineseSocket != nullptr)
 	{
+		voltag = m_ChineseSocket->GetRatedVoltag();		// 电压转换成国标的额定电压
 		m_ChineseSocket->SetCurrentVoltag(voltag);
 	}
 }

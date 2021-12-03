@@ -3,7 +3,7 @@
  * @Autor: LC
  * @Date: 2021-12-02 16:24:15
  * @LastEditors: LC
- * @LastEditTime: 2021-12-03 11:49:31
+ * @LastEditTime: 2021-12-03 11:55:33
  * @Description: 适配器模式
 -->
 # 适配器模式
@@ -106,16 +106,18 @@ void AppDelegate::UseChinesePlug(ChineseSocket* socket)
 ```cpp
 void Adapter::SetCurrentVoltag(int voltag)
 {
-	if (m_AmericanSocket != nullptr && m_AmericanSocket->GetRatedVoltag() != voltag)
+	if (m_AmericanSocket != nullptr)
 	{
+		voltag = m_AmericanSocket->GetRatedVoltag();	// 电压转换成美标的额定电压
 		m_AmericanSocket->SetCurrentVoltag(voltag);
 	}
-	if (m_ChineseSocket != nullptr && m_ChineseSocket->GetRatedVoltag() != voltag)
+
+	if (m_ChineseSocket != nullptr)
 	{
+		voltag = m_ChineseSocket->GetRatedVoltag();		// 电压转换成国标的额定电压
 		m_ChineseSocket->SetCurrentVoltag(voltag);
 	}
 }
-
 ```
 
 - 修改`SetCurrentVoltag`方法的实现，之前的实现方式修改的是适配器的电压数值，并没有实际就改到`Socket`插头的电压数值，所以之前的写法是个BUG
@@ -141,3 +143,10 @@ std::shared_ptr<Adapter> adapter = std::make_shared<Adapter>(chineseSocket.get()
 ```
 
 - 修改`shared_ptr`的创建方式，改用`make_shared`的方式进行创建
+
+```cpp
+Adapter(ChineseSocket* ChineseSocket);
+Adapter(AmericanSocket* AmericanSocket);
+```
+
+- 添加两种构造函数，因为美标插头和国标插头并不是同时拥有，添加两种构造函数可以适配两种只有单一插头的情况
