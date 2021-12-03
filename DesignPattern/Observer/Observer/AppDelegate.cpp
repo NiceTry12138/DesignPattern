@@ -10,12 +10,12 @@ void AppDelegate::Run()
 
 void AppDelegate::ShowCurrentInfo()
 {
-	for (auto stu : m_students)
+	for (auto& stu : m_students)
 	{
 		stu->ShowInfo();
 	}
 	std::cout << std::endl;
-	for (auto tea : m_teachers)
+	for (auto& tea : m_teachers)
 	{
 		tea->ShowInfo();
 	}
@@ -24,7 +24,7 @@ void AppDelegate::ShowCurrentInfo()
 
 void AppDelegate::ModifyInfo(const std::string& info)
 {
-	for (auto tea : m_teachers)
+	for (auto& tea : m_teachers)
 	{
 		tea->Modify(info);
 	}
@@ -34,8 +34,8 @@ void AppDelegate::CreateStudent(int num)
 {
 	for (int i = 0; i < num; ++i)
 	{
-		std::shared_ptr<Student> student(new Student("Student_" + std::to_string(i)));
-		m_students.push_back(student);
+		std::unique_ptr<Student> student = std::make_unique<Student>("Student_" + std::to_string(i));
+		m_students.push_back(std::move(student));
 	}
 }
 
@@ -43,8 +43,8 @@ void AppDelegate::CreateTeacher(int num)
 {
 	for (int i = 0; i < num; ++i)
 	{
-		std::shared_ptr<Teacher> teacher(new Teacher("Teacher_" + std::to_string(i)));
-		m_teachers.push_back(teacher);
+		std::unique_ptr<Teacher> teacher = std::make_unique<Teacher>("Teacher_" + std::to_string(i));
+		m_teachers.push_back(std::move(teacher));
 	}
 }
 
@@ -54,30 +54,30 @@ void AppDelegate::Test(int StuNum, int TeaNum)
 	CreateTeacher(TeaNum);
 
 	// 老师添加观察者
-	for (auto stu : m_students)
+	for (auto& stu : m_students)
 	{
-		for (auto tea : m_teachers)
+		for (auto& tea : m_teachers)
 		{
 			tea->AddObserver(stu.get());
 		}
 	}
 
 	// 学生取消订阅
-	for (auto stu : m_students)
+	for (auto& stu : m_students)
 	{
 		int randomTeaIndex = RandomInt(m_teachers.size());
 		stu->UnSubscribePublisher(m_teachers[randomTeaIndex].get());
 	}
 
 	// 老师删除观察者
-	for (auto tea : m_teachers)
+	for (auto& tea : m_teachers)
 	{
 		int randomStuIndex = RandomInt(m_students.size());
 		tea->RemoveObserver(m_students[randomStuIndex].get());
 	}
 
 	// 学生订阅老师
-	for (auto stu : m_students)
+	for (auto& stu : m_students)
 	{
 		int randomTeaIndex = RandomInt(m_teachers.size());
 		stu->SubscribePublisher(m_teachers[randomTeaIndex].get());

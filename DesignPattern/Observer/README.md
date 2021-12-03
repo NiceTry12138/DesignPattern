@@ -3,7 +3,7 @@
  * @Autor: LC
  * @Date: 2021-12-01 21:09:01
  * @LastEditors: LC
- * @LastEditTime: 2021-12-02 14:33:01
+ * @LastEditTime: 2021-12-03 11:46:37
  * @Description: file content
 -->
 # 观察者模式
@@ -105,3 +105,18 @@ for (auto stu : m_students){
 ```
 
 测试用例在`AppDelegate`对象中实现，使用数组记录下每个创建的`Student`和`Teacher`对象，让老师随机的添加学生和删除学生的观察，让学生随机的订阅和取消订阅老师
+
+## 修改
+
+```cpp
+void AppDelegate::CreateTeacher(int num)
+{
+	for (int i = 0; i < num; ++i)
+	{
+		std::unique_ptr<Teacher> teacher = std::make_unique<Teacher>("Teacher_" + std::to_string(i));
+		m_teachers.push_back(std::move(teacher));
+	}
+}
+```
+
+`AppDelegate`中对`Student`和`Teacher`的创建使用`unique_ptr`，因为创建出来的对象并没有给其他对象共享使用权
