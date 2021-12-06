@@ -25,7 +25,7 @@ protected:
 	int RandomInt(int maxVal);
 
 private:
-	std::vector<shared_ptr<Teacher>> m_teachers;
-	std::vector<shared_ptr<Student>> m_students;
+	std::vector<std::unique_ptr<Teacher>> m_teachers;
+	std::vector<std::unique_ptr<Student>> m_students;
 };
 

@@ -3,7 +3,7 @@
  * @Autor: LC
  * @Date: 2021-12-02 16:24:15
  * @LastEditors: LC
- * @LastEditTime: 2021-12-02 16:45:08
+ * @LastEditTime: 2021-12-03 11:55:33
  * @Description: 适配器模式
 -->
 # 适配器模式
@@ -100,3 +100,53 @@ void AppDelegate::UseChinesePlug(ChineseSocket* socket)
 1. 智能指针，引用计数的方式管理内存
 2. 分别展现正常情况下和适配器情况下使用的情况
 3. 针对不同的接口会设定不同的电压，而适配器会根据电压和接口进行适配
+
+## 修改
+
+```cpp
+void Adapter::SetCurrentVoltag(int voltag)
+{
+	if (m_AmericanSocket != nullptr)
+	{
+		voltag = m_AmericanSocket->GetRatedVoltag();	// 电压转换成美标的额定电压
+		m_AmericanSocket->SetCurrentVoltag(voltag);
+	}
+
+	if (m_ChineseSocket != nullptr)
+	{
+		voltag = m_ChineseSocket->GetRatedVoltag();		// 电压转换成国标的额定电压
+		m_ChineseSocket->SetCurrentVoltag(voltag);
+	}
+}
+```
+
+- 修改`SetCurrentVoltag`方法的实现，之前的实现方式修改的是适配器的电压数值，并没有实际就改到`Socket`插头的电压数值，所以之前的写法是个BUG
+
+```cpp
+std::string Adapter::ChineseSocketInput() const
+{
+	if (m_AmericanSocket == nullptr)
+	{
+		return "Error : No Sockeet Input";
+	}
+	return this->m_AmericanSocket->AmericanSocketInput();
+}
+```
+
+- 对于初始值为`nullptr`的指针进行操作的时候判断是否为空，做防御式编程
+
+```cpp
+std::shared_ptr<AmericanSocket> americanSocket = std::make_shared<AmericanSocket>();
+std::shared_ptr<ChineseSocket> chineseSocket = std::make_shared<ChineseSocket>();
+
+std::shared_ptr<Adapter> adapter = std::make_shared<Adapter>(chineseSocket.get(), americanSocket.get());
+```
+
+- 修改`shared_ptr`的创建方式，改用`make_shared`的方式进行创建
+
+```cpp
+Adapter(ChineseSocket* ChineseSocket);
+Adapter(AmericanSocket* AmericanSocket);
+```
+
+- 添加两种构造函数，因为美标插头和国标插头并不是同时拥有，添加两种构造函数可以适配两种只有单一插头的情况

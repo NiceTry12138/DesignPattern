@@ -4,10 +4,10 @@
 
 void AppDelegate::Run()
 {
-	std::shared_ptr<AmericanSocket> americanSocket(new AmericanSocket);
-	std::shared_ptr<ChineseSocket> chineseSocket(new ChineseSocket);
+	std::shared_ptr<AmericanSocket> americanSocket = std::make_shared<AmericanSocket>();
+	std::shared_ptr<ChineseSocket> chineseSocket = std::make_shared<ChineseSocket>();
 
-	std::shared_ptr<Adapter> adapter(new Adapter(chineseSocket.get(), americanSocket.get()));
+	std::shared_ptr<Adapter> adapter = std::make_shared<Adapter>(chineseSocket.get(), americanSocket.get());
 
 	UserAmericanPlug(americanSocket.get());
 	UseChinesePlug(chineseSocket.get());
