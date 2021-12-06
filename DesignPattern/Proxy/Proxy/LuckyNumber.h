@@ -2,6 +2,9 @@
 #include "Number.h"
 #include <map>
 
+/// <summary>
+/// 访问数据库的实体类
+/// </summary>
 class LuckyNumber : public Number
 {
 public:
@@ -14,9 +17,12 @@ public:
     virtual ~LuckyNumber();
 
 protected:
+    /// <summary>
+    /// 读取文件，将数据存储到m_Numbers中
+    /// </summary>
     void ReadFile();
 
 private:
-    std::map<std::string, int> m_Numbers;
+    std::map<std::string, int> m_Numbers; // 存储数据KV对象
 };
 
