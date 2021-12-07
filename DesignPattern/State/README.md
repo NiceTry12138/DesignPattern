@@ -3,7 +3,7 @@
  * @Autor: LC
  * @Date: 2021-12-06 17:03:22
  * @LastEditors: LC
- * @LastEditTime: 2021-12-07 16:52:33
+ * @LastEditTime: 2021-12-07 18:09:31
  * @Description: 代理模式
 -->
 
@@ -303,13 +303,6 @@ void AppDelegate::TouchTools()
 
 因此该项目的流程图就很清楚
 
-```mermaid
-graph LR
-A[方形] -->B(圆角)
-    B --> C{条件a}
-    C -->|a=1| D[结果1]
-    C -->|a=2| E[结果2]
-    F[横向流程图]
-```
+![Run的流程图](img/run.png)
 
 ## 修改
