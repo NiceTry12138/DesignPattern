@@ -3,7 +3,7 @@
  * @Autor: LC
  * @Date: 2021-12-06 17:03:22
  * @LastEditors: LC
- * @LastEditTime: 2021-12-06 18:04:54
+ * @LastEditTime: 2021-12-07 09:42:32
  * @Description: 代理模式
 -->
 
@@ -97,10 +97,27 @@ void NumberProxy::AddCache(const std::string& _key, const int& _val)
 
 	m_Cache.push_back(std::make_pair(_key, _val));
 }
+
+std::pair<bool, int> NumberProxy::generate(std::string animal)
+{
+	///....
+	auto it = FindCache(animal);
+	if (it != m_Cache.end())
+	{
+		auto _pair = std::make_pair(it->first, it->second);
+		m_Cache.erase(it);
+		m_Cache.push_back(_pair);
+		return { true, _pair.second };
+	}
+	///....
+	return getVal;
+}
+
 ```
 
-维护缓存列表，缓存有一个数量上限，超过上限的时候使用**最久未使用**调度算法，将链表头部的节点从缓存中删除，当某个缓存节点被调用时将这个节点移动至链表的最后  
-只有调用`generate`方法才会将数据添加到缓存当中  
+1. 维护缓存列表，缓存有一个数量上限，超过上限的时候使用**最久未使用**调度算法，将链表头部的节点从缓存中删除  
+2. 只有调用`generate`方法才会将数据添加到缓存当中  
+3. 当某个缓存节点被查找时将这个节点移动至链表的最后  
 
 ## 运行
 
