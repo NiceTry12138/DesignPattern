@@ -139,14 +139,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AppDelegate.h" />
+    <ClInclude Include="CapeMario.h" />
+    <ClInclude Include="Commands.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="FireMario.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="MarioState.h" />
+    <ClInclude Include="MarioStates.h" />
+    <ClInclude Include="Position.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SmallMario.h" />
+    <ClInclude Include="SuperMario.h" />
+    <ClInclude Include="Action.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Action.cpp" />
+    <ClCompile Include="AppDelegate.cpp" />
+    <ClCompile Include="CapeMario.cpp" />
+    <ClCompile Include="Commands.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="FireMario.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="MarioState.cpp" />
+    <ClCompile Include="Position.cpp" />
+    <ClCompile Include="SmallMario.cpp" />
+    <ClCompile Include="SuperMario.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

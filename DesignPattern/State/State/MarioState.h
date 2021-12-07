@@ -7,5 +7,6 @@ public:
 	virtual void GotMushroom(Mario* mario) = 0;
 	virtual void GotFireFlower(Mario* mario) = 0;
 	virtual void GotFeather(Mario* mario) = 0;
+	virtual void GotAttack(Mario* mario) = 0;
 };
 
