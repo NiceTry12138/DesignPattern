@@ -8,7 +8,7 @@ enum class Mario_TOOLS {
 	FireFlower,
 	Feather,
 	Attack
-};
+}; 
 
 class Config : public Singleton<Config> {
 public:

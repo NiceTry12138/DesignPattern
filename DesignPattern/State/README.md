@@ -3,7 +3,7 @@
  * @Autor: LC
  * @Date: 2021-12-06 17:03:22
  * @LastEditors: LC
- * @LastEditTime: 2021-12-07 18:09:31
+ * @LastEditTime: 2021-12-07 18:36:22
  * @Description: 代理模式
 -->
 
@@ -303,6 +303,6 @@ void AppDelegate::TouchTools()
 
 因此该项目的流程图就很清楚
 
-![Run的流程图](img/run.png)
+![Run的流程图](https://gitee.com/liucong76/seastar/blob/master/DesignPattern/State/img/Run.png)
 
 ## 修改
