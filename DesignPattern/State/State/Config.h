@@ -36,5 +36,5 @@ public:
 	void SetMarioState(bool _isAlive) { m_IsAlive = _isAlive; }
 private:
 	bool m_IsAlive{ true };		// 当前马里奥是否存活
-	float m_DelayTime{ 0.05f };	// 屏幕刷新间隔
+	float m_DelayTime{ 0.03f };	// 屏幕刷新间隔
 };

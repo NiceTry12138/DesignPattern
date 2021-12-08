@@ -5,13 +5,13 @@
 #include <conio.h>
 #include <thread>
 #include <Windows.h>
+#include <vector>
 
 void AppDelegate::Run()
 {
 	Init();
 
-	std::thread showThread(&AppDelegate::Show, this);
-	showThread.detach();
+	m_ShowThread = std::thread(&AppDelegate::Show, this);
 
 	m_ISQUIT = false;
 	do {
@@ -27,6 +27,7 @@ void AppDelegate::Run()
 			m_ISQUIT = true;
 		}
 	} while (!m_ISQUIT);
+
 }
 
 void AppDelegate::Init()
@@ -56,24 +57,60 @@ void AppDelegate::GetInput(char input)
 
 void AppDelegate::Show()
 {
+	HANDLE hOutput, hOutBuf;//控制台屏幕缓冲区句柄
+		//创建新的控制台缓冲区
+	hOutBuf = CreateConsoleScreenBuffer(
+		GENERIC_WRITE,//定义进程可以往缓冲区写数据
+		FILE_SHARE_WRITE,//定义缓冲区可共享写权限
+		NULL,
+		CONSOLE_TEXTMODE_BUFFER,
+		NULL
+	);
+	hOutput = CreateConsoleScreenBuffer(
+		GENERIC_WRITE,//定义进程可以往缓冲区写数据
+		FILE_SHARE_WRITE,//定义缓冲区可共享写权限
+		NULL,
+		CONSOLE_TEXTMODE_BUFFER,
+		NULL
+	);
+
+	COORD coord = { 0,0 };
+	//双缓冲处理显示
+	DWORD bytes = 0;
+	CONSOLE_CURSOR_INFO cci;
+	cci.bVisible = 0;
+	cci.dwSize = 1;
+	SetConsoleCursorInfo(hOutput, &cci);
+	SetConsoleCursorInfo(hOutBuf, &cci);
+
+	bool selectBuffer = true;
 	do
 	{
-		system("cls");
 		m_Mario->CalculatePos();
 		auto _pos = ConversMarioPosition(m_Mario->GetPosition());
-		std::string showStr = ShowTip();
+		std::vector<std::string> showList;
+		showList.push_back(ShowTip());
 		for (int i = 0; i <= Config::CMD_HEIGHT; ++i)
 		{
+			std::string showLine{};
 			for (int j = 0; j <= Config::CMD_WEIGHT; ++j) {
-				showStr += ShowItem(j, i);
+				showLine += ShowItem(j, i);
 			}
-			showStr += "\n";
+			showList.push_back(showLine);
 		}
-		for (int j = 0; j <= Config::CMD_WEIGHT; ++j) {
-			//showStr += Config::GREEN_BOX + " " + Config::NORMAL_BOX;
-			showStr += "-";
+		for (int i = 0; i < showList.size(); ++i)
+		{
+			coord.Y = i;
+			if (selectBuffer)
+			{
+				WriteConsoleOutputCharacterA(hOutBuf, showList[i].c_str(), strlen(showList[i].c_str()), coord, &bytes);
+				SetConsoleActiveScreenBuffer(hOutBuf);
+			}
+			else {
+				WriteConsoleOutputCharacterA(hOutput, showList[i].c_str(), strlen(showList[i].c_str()), coord, &bytes);
+				SetConsoleActiveScreenBuffer(hOutput);
+			}
 		}
-		std::cout << showStr;
 		Sleep(Config::GetInstance().GetDelayTime() * 1000);
 	} while (!m_ISQUIT);
 }
@@ -132,4 +169,9 @@ std::string AppDelegate::ShowItem(int x, int y)
 		result = m_Mario->GetShow();
 	}
 	return result;
+}
+
+AppDelegate::~AppDelegate()
+{
+	m_ShowThread.join();
 }

@@ -3,7 +3,7 @@
  * @Autor: LC
  * @Date: 2021-12-06 17:03:22
  * @LastEditors: LC
- * @LastEditTime: 2021-12-07 19:24:35
+ * @LastEditTime: 2021-12-08 12:09:06
  * @Description: 代理模式
 -->
 
@@ -305,4 +305,93 @@ void AppDelegate::TouchTools()
 
 ![Run的流程图](/DesignPattern/State/img/Run.png)
 
+## 运行方式
+
+1. `a`操作主角左移
+2. `d`操作主角右移
+3. `w`操作主角跳跃
+4. 屏幕上 `1`表示蘑菇 `2`表示火焰花 `3`表示羽毛 `4`表示敌人
+
 ## 修改
+
+1. 使用双缓存，大幅度减轻屏幕刷新的闪烁问题
+
+```cpp
+void AppDelegate::Show()
+{
+	HANDLE hOutput, hOutBuf;//控制台屏幕缓冲区句柄
+		//创建新的控制台缓冲区
+	hOutBuf = CreateConsoleScreenBuffer(
+		GENERIC_WRITE,//定义进程可以往缓冲区写数据
+		FILE_SHARE_WRITE,//定义缓冲区可共享写权限
+		NULL,
+		CONSOLE_TEXTMODE_BUFFER,
+		NULL
+	);
+	hOutput = CreateConsoleScreenBuffer(
+		GENERIC_WRITE,//定义进程可以往缓冲区写数据
+		FILE_SHARE_WRITE,//定义缓冲区可共享写权限
+		NULL,
+		CONSOLE_TEXTMODE_BUFFER,
+		NULL
+	);
+
+	COORD coord = { 0,0 };
+	//双缓冲处理显示
+	DWORD bytes = 0;
+	CONSOLE_CURSOR_INFO cci;
+	cci.bVisible = 0;
+	cci.dwSize = 1;
+	SetConsoleCursorInfo(hOutput, &cci);
+	SetConsoleCursorInfo(hOutBuf, &cci);
+
+	bool selectBuffer = true;
+	do
+	{
+		m_Mario->CalculatePos();
+		auto _pos = ConversMarioPosition(m_Mario->GetPosition());
+		std::vector<std::string> showList;
+		showList.push_back(ShowTip());
+		for (int i = 0; i <= Config::CMD_HEIGHT; ++i)
+		{
+			std::string showLine{};
+			for (int j = 0; j <= Config::CMD_WEIGHT; ++j) {
+				showLine += ShowItem(j, i);
+			}
+			showList.push_back(showLine);
+		}
+		for (int i = 0; i < showList.size(); ++i)
+		{
+			coord.Y = i;
+			if (selectBuffer)
+			{
+				WriteConsoleOutputCharacterA(hOutBuf, showList[i].c_str(), strlen(showList[i].c_str()), coord, &bytes);
+				SetConsoleActiveScreenBuffer(hOutBuf);
+			}
+			else {
+				WriteConsoleOutputCharacterA(hOutput, showList[i].c_str(), strlen(showList[i].c_str()), coord, &bytes);
+				SetConsoleActiveScreenBuffer(hOutput);
+			}
+		}
+		Sleep(Config::GetInstance().GetDelayTime() * 1000);
+	} while (!m_ISQUIT);
+}
+```
+
+2. 修改渲染线程的使用方式，将线程作为成员属性，在AppDelegate析构的时候将其`join`释放掉，而不是使用`detach`将其分离出来，解决了AppDelate已经被释放，渲染线程依旧在执行从而导致的崩溃问题
+
+```cpp
+
+void AppDelegate::Run()
+{
+	Init();
+
+	m_ShowThread = std::thread(&AppDelegate::Show, this);
+}
+
+AppDelegate::~AppDelegate()
+{
+	m_ShowThread.join();
+}
+
+```

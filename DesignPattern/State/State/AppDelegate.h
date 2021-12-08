@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <thread>
 
 class AppDelegate
 {
@@ -47,7 +48,10 @@ public:
 	Position ConversMarioPosition(const Position& marioPosition);
 
 	std::string ShowItem(int x, int y);
+
+	virtual ~AppDelegate();
 private:
+	std::thread m_ShowThread;
 	bool m_ISQUIT{ false };
 	std::map<Mario_TOOLS, Position> m_Tools;
 	std::map<char, std::unique_ptr<Command>> m_Commands;
