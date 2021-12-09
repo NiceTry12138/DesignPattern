@@ -5,22 +5,26 @@ template<typename T>
 class MyDockerIterator : public BaseIterator<T>
 {
 public:
-	MyDockerIterator(MyBaseDocker<T> *_docker, int _cur);
+	MyDockerIterator(MyBaseDocker<T> *_docker, int _cur, bool reverse = false);
 
-	virtual void next();
+	virtual void next() override;
+	virtual void behind() override;
 	T operator *();
 	bool operator != (const MyDockerIterator<T> _other);
 	MyDockerIterator<T>& operator ++ ();
 
 	virtual bool isDone();
 
+	void SetVal(const T& _val) override;
+
 private:
+	int m_startIndex;
 	int m_cur{ 0 };
 	MyBaseDocker<T>* m_Docker{ nullptr };
 };
 
 template<typename T>
-inline MyDockerIterator<T>::MyDockerIterator(MyBaseDocker<T> *_docker, int _cur) : m_Docker(_docker), m_cur(_cur)
+inline MyDockerIterator<T>::MyDockerIterator(MyBaseDocker<T> *_docker, int _cur, bool reverse) : m_Docker(_docker), m_cur(_cur), m_startIndex(_cur), BaseIterator<T>(reverse)
 {
 }
 
@@ -28,6 +32,12 @@ template<typename T>
 inline void MyDockerIterator<T>::next()
 {
 	++m_cur;
+}
+
+template<typename T>
+inline void MyDockerIterator<T>::behind()
+{
+	--m_cur;
 }
 
 template<typename T>
@@ -45,12 +55,30 @@ inline bool MyDockerIterator<T>::operator!=(const MyDockerIterator<T> _other)
 template<typename T>
 inline MyDockerIterator<T>& MyDockerIterator<T>::operator++()
 {
-	++m_cur;
+	if (BaseIterator<T>::ISReverse())
+	{
+		behind();
+	}
+	else {
+		next();
+	}
 	return *this;
 }
 
 template<typename T>
 inline bool MyDockerIterator<T>::isDone()
 {
-	return m_cur >= m_Docker->GetMaxSize();
+	if (BaseIterator<T>::ISReverse())
+	{
+		return m_cur == -1;
+	}
+	else {
+		return m_cur >= m_Docker->GetMaxSize();
+	}	
+}
+
+template<typename T>
+inline void MyDockerIterator<T>::SetVal(const T& _val)
+{
+	m_Docker->SetVal(m_cur, _val);
 }

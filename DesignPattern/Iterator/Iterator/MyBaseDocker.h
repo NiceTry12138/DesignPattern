@@ -12,6 +12,9 @@ public:
 	virtual ~MyBaseDocker();
 	MyDockerIterator<T> begin();
 	MyDockerIterator<T> end();
+
+	MyDockerIterator<T> rbegin();
+	MyDockerIterator<T> rend();
 	
 	int GetCurrentSize();
 	int GetMaxSize();
@@ -19,6 +22,7 @@ public:
 	void AddItem(T _val);
 	void Clear();
 	T at(int _index);
+	void SetVal(int _pos, const T& _val);
 
 private:
 	T* m_Items{ nullptr };
@@ -49,6 +53,18 @@ template<typename T>
 inline MyDockerIterator<T> MyBaseDocker<T>::end()
 {
 	return MyDockerIterator<T>(this, m_CurrentSize);
+}
+
+template<typename T>
+inline MyDockerIterator<T> MyBaseDocker<T>::rbegin()
+{
+	return MyDockerIterator<T>(this, m_CurrentSize - 1, true);
+}
+
+template<typename T>
+inline MyDockerIterator<T> MyBaseDocker<T>::rend()
+{
+	return MyDockerIterator<T>(this, -1, true);
 }
 
 template<typename T>
@@ -91,4 +107,15 @@ inline T MyBaseDocker<T>::at(int _index)
 		return NULL;
 	}
 	return m_Items[_index];
+}
+
+template<typename T>
+inline void MyBaseDocker<T>::SetVal(int _pos, const T& _val)
+{
+	if (_pos >= m_CurrentSize)
+	{
+		assert(0);
+		return;
+	}
+	m_Items[_pos] = _val;
 }

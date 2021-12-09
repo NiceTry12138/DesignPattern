@@ -19,6 +19,8 @@ public:
 	MyListIterator<T> begin();
 	MyListIterator<T> end();
 
+	MyListIterator<T> rbegin();
+	MyListIterator<T> rend();
 protected:
 	ListNode<T>* GetLastNode();
 
@@ -86,13 +88,25 @@ inline size_t MyList<T>::Size()
 template<typename T>
 inline MyListIterator<T> MyList<T>::begin()
 {
-	return MyListIterator<T>(m_head->next);
+	return MyListIterator<T>(m_head->next, m_head);
 }
 
 template<typename T>
 inline MyListIterator<T> MyList<T>::end()
 {
-	return MyListIterator<T>(nullptr);
+	return MyListIterator<T>(nullptr, m_head);
+}
+
+template<typename T>
+inline MyListIterator<T> MyList<T>::rbegin()
+{
+	return MyListIterator<T>(GetLastNode(), GetLastNode(), true);
+}
+
+template<typename T>
+inline MyListIterator<T> MyList<T>::rend()
+{
+	return MyListIterator<T>(m_head, GetLastNode(), true);
 }
 
 template<typename T>
